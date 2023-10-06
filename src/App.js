@@ -1,9 +1,11 @@
-import Header from './components/Header';
+import Header from './components/Title';
+import Shortener from './components/Shortener';
 
 export default function App() {
   return (
-    <main>
-      <Header />;
+    <main className="container">
+      <Header />
+      <Shortener />
     </main>
   );
 }
