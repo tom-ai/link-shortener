@@ -1,61 +1,71 @@
 import { useState } from 'react';
+import submitFormData from '../api/submitFormData';
 
 export default function Form() {
+  const [longUrl, setLongUrl] = useState('');
   const [link, setLink] = useState('');
-  const [shortenedLink, setShortenedLink] = useState(null);
-
-  const [status, setStatus] = useState('submitting' | 'success');
   const [error, setError] = useState(null);
+
+  const [status, setStatus] = useState(null); // typing, submitting, success
 
   function handleChange(e) {
     e.preventDefault();
-    setLink(e.target.value);
+    setStatus('typing');
+    setLongUrl(e.target.value);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setStatus('submitting');
-    fetch('https://api-ssl.bitly.com/v4/shorten', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_BITLY_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        long_url: link,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+
+    try {
+      const data = await submitFormData(longUrl);
+      if (data) {
+        setError(null);
         setStatus('success');
-        setShortenedLink(data.id);
-      })
-      .catch((error) => {
-        setError(error);
-      });
+        setLink(data.id);
+      }
+    } catch (error) {
+      setTimeout(() => {
+        setError(error.message);
+        setStatus(null);
+      }, 1000);
+    }
   }
 
-  let buttonText = 'Shorten';
-  if (status === 'submitting') buttonText = 'Working...';
-  if (status === 'success') buttonText = 'Copy!';
-  if (error) buttonText = 'Try again';
-
-  let statusText = 'Paste a link... https://dev.bitly.com/';
-  if (status === 'success') statusText = 'Looking good!';
-  if (error !== null) statusText = 'Something went wrong :(';
-
   return (
-    <>
-      <p>{statusText}</p>
-      <form onSubmit={handleSubmit}>
-        <input
-          disabled={status === 'submitting'}
-          onChange={(e) => handleChange(e)}
-          type="text"
-          value={status === 'success' ? shortenedLink : link}
-        />
-        <button disabled={link.length === 0}> {buttonText}</button>
-      </form>
-    </>
+    <form onSubmit={(e) => handleSubmit(e)}>
+      <label htmlFor="longUrl">Long URL:</label>
+      <input
+        id="longUrl"
+        name="longUrl"
+        onChange={(e) => handleChange(e)}
+        disabled={status === 'submitting'}
+        type="url"
+      />
+      <button disabled={longUrl.length === 0 || status === 'submitting'}>
+        {status === 'submitting' ? 'Working...' : 'Shorten'}
+      </button>
+      {error !== null ? (
+        <p>Something went wrong. Try again.</p>
+      ) : (
+        status === 'success' && (
+          <>
+            <p>Here is your shortened link:</p>
+            <a target="_blank" rel="noreferrer" href={link}>
+              {link}
+            </a>
+          </>
+        )
+      )}
+    </form>
   );
 }
+
+// error handlling notes
+
+// 400 bad request
+// 404 not found
+// look at docs
+
+// test for all of these with mocks
