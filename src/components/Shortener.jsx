@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import submitFormData from '../api/submitFormData';
 
-export default function Form() {
+export default function Shorten() {
   const [longUrl, setLongUrl] = useState('');
   const [link, setLink] = useState('');
   const [error, setError] = useState(null);
@@ -42,6 +42,7 @@ export default function Form() {
         onChange={(e) => handleChange(e)}
         disabled={status === 'submitting'}
         type="url"
+        value={longUrl}
       />
       <button disabled={longUrl.length === 0 || status === 'submitting'}>
         {status === 'submitting' ? 'Working...' : 'Shorten'}
