@@ -17,20 +17,37 @@ export default function Shorten() {
   async function handleSubmit(e) {
     e.preventDefault();
     setStatus('submitting');
+    setLink(null);
 
-    try {
-      const data = await submitFormData(longUrl);
-      if (data) {
+    fetch('https://api-ssl.bitly.com/v4/shorten', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_BITLY_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        long_url: longUrl,
+      }),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.ok) {
+          return res.json();
+        }
+        //might need to check if res has ok true
+      })
+      .then((data) => {
         setError(null);
         setStatus('success');
         setLink(data.id);
-      }
-    } catch (error) {
-      setTimeout(() => {
-        setError(error.message);
-        setStatus(null);
-      }, 1000);
-    }
+      })
+      .catch((err) => {
+        console.log('yes');
+        setTimeout(() => {
+          setError(err.message);
+          setStatus(null);
+        }, 1000);
+      });
   }
 
   return (
