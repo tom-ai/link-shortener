@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import submitFormData from '../api/submitFormData';
 
 export default function Shorten() {
   const [longUrl, setLongUrl] = useState('');
   const [link, setLink] = useState('');
   const [error, setError] = useState(null);
 
-  const [status, setStatus] = useState(null); // typing, submitting, success
+  const [status, setStatus] = useState(null);
 
   function handleChange(e) {
     e.preventDefault();
