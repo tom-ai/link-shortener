@@ -30,19 +30,16 @@ export default function Shorten() {
       }),
     })
       .then((res) => {
-        console.log(res);
         if (res.ok) {
           return res.json();
         }
-        //might need to check if res has ok true
       })
       .then((data) => {
         setError(null);
         setStatus('success');
-        setLink(data.id);
+        setLink(data.link);
       })
       .catch((err) => {
-        console.log('yes');
         setTimeout(() => {
           setError(err.message);
           setStatus(null);
@@ -70,7 +67,7 @@ export default function Shorten() {
         status === 'success' && (
           <>
             <p>Here is your shortened link:</p>
-            <a target="_blank" rel="noreferrer" href={link}>
+            <a rel="noreferrer" href={link}>
               {link}
             </a>
           </>
@@ -79,11 +76,3 @@ export default function Shorten() {
     </form>
   );
 }
-
-// error handlling notes
-
-// 400 bad request
-// 404 not found
-// look at docs
-
-// test for all of these with mocks
