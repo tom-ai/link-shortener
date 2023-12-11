@@ -3,15 +3,16 @@
 A very basic link shortener using the Bitly API.
 
 1. Clone from GitHub
-2. Run `npm start`
+2. `cd` into directory
+3. Run `npm start`
 
 ## Notes
 
 Link to the Bitly docs: https://dev.bitly.com/
 
-It should be typed (TypeScript). For example, the component state (i.e. 'typing'/'error'/'success') could utilize a union type.
+It's written in JavaScript, but this is not ideal. It should be typed (TypeScript). For example, the component state (i.e. 'typing'/'error'/'success') could utilize a union type.
 
-## Testing
+## Tests Inlcude:
 
-* Tests for UI elements and user interactions
-* Mocking fetch to test happy path
+- UI elements and user interactions
+- "Happy path", mocking fetch
